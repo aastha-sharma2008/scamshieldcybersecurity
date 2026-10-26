@@ -1,0 +1,161 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ScamShield</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #101d35;
+  color: white;
+  text-align: center;
+  padding: 25px 15px;
+}
+
+.card {
+  max-width: 550px;
+  margin: 25px auto;
+  background: white;
+  color: #17243b;
+  padding: 22px;
+  border-radius: 15px;
+}
+
+textarea {
+  width: 95%;
+  height: 110px;
+  padding: 10px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+button {
+  background: #087f72;
+  color: white;
+  border: none;
+  padding: 13px 18px;
+  margin-top: 12px;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+#result {
+  margin-top: 18px;
+  padding: 12px;
+  border-radius: 8px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.tip {
+  background: #e9f8f3;
+  padding: 12px;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🛡️ ScamShield</h1>
+<h3>Think Before You Trust.</h3>
+<p>Your digital safety companion</p>
+
+<div class="card">
+  <h2>🔎 Scam Message Checker</h2>
+  <p>Paste a suspicious message below.</p>
+
+  <textarea id="message"
+    placeholder="Paste your sample message here..."></textarea>
+
+  <br>
+  <button onclick="checkScam()">Check Message</button>
+
+  <div id="result" aria-live="polite"></div>
+</div>
+
+<div class="card">
+  <h2>💡 Stay Safe Online</h2>
+
+  <div class="tip">Never share your OTP, PIN or password.</div>
+  <div class="tip">Verify job offers before paying any fee.</div>
+  <div class="tip">Think carefully before clicking unknown links.</div>
+</div>
+
+<script>
+function checkScam() {
+  const message = document
+    .getElementById("message")
+    .value.toLowerCase()
+    .trim();
+
+  const result = document.getElementById("result");
+
+  if (message === "") {
+    result.style.background = "#fff0cc";
+    result.innerHTML = "Please enter a message first.";
+    return;
+  }
+
+  const rules = [
+    {
+      words: ["otp", "verification code", "share your pin"],
+      text: "The message mentions a secret code or PIN."
+    },
+    {
+      words: ["registration fee", "processing fee", "pay now", "advance payment"],
+      text: "The message may be asking for an upfront payment."
+    },
+    {
+      words: ["urgent", "immediately", "act now"],
+      text: "The message uses urgency to pressure you."
+    },
+    {
+      words: ["you won", "lottery", "claim your prize"],
+      text: "The message mentions an unexpected prize."
+    },
+    {
+      words: ["click here", "click this link", "verify your account"],
+      text: "The message asks you to click a link or verify an account."
+    }
+  ];
+
+  let warnings = [];
+
+  for (const rule of rules) {
+    if (rule.words.some(word => message.includes(word))) {
+      warnings.push(rule.text);
+    }
+  }
+
+ if (warnings.length > 0) {
+  const riskLevel = warnings.length >= 3
+    ? "HIGH"
+    : warnings.length >= 2
+    ? "MEDIUM"
+    : "LOW";
+
+  result.style.background = "#fff0e8";
+  result.innerHTML =
+    "<h3>⚠️ Warning Signs Found</h3>" +
+    "<h3>Risk Level: " + riskLevel + "</h3>" +
+    "<ul>" +
+    warnings.map(w => "<li>" + w + "</li>").join("") +
+    "</ul>" +
+    "<p>Verify the sender independently. Never share secret codes or pay unexpected fees.</p>";
+} else {
+    result.style.background = "#e8f3ff";
+    result.innerHTML =
+      "<h3>ℹ️ No Listed Warning Signs Found</h3>" +
+      "<p>This does not prove the message is safe. Check the sender and context carefully.</p>";
+  }
+}
+</script>
+
+</body>
+</html>
